@@ -1,0 +1,7 @@
+{
+  "task_id": "task-dieline-platform",
+  "task_description": "Build a complete, interconnected Dieline Templates Platform with three screens: Templates Gallery, Template Configuration, and Dieline Editor. All screens must share template state and support full dynamic interaction (search, filter, dimension updates, geometry recalculation, 2D/3D sync).",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null
+}

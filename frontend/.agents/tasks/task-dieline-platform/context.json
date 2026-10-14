@@ -1,0 +1,28 @@
+{
+  "project_type": "React 19 + Vite frontend, React Router DOM for routing, Zustand for state, Three.js + @react-three/fiber + @react-three/drei for 3D preview",
+  "language": "JavaScript (JSX)",
+  "build_system": "Vite 8.3.2 with @vitejs/plugin-react",
+  "test_framework": "None currently configured. No test command in package.json.",
+  "build_command": "npm run build",
+  "test_command": "No automated tests. Manual verification via npm run dev + browser testing required.",
+  "verification_instructions": "Run npm run dev, open http://localhost:5173, navigate to /dieline (gallery), click a template card to open configuration screen, change dimensions to verify 2D/3D update, click 'Open in Editor', verify editor receives configuration state, change dimensions in editor, verify 2D canvas and 3D preview update. Search/filter/sort must work in gallery. No console errors. npm run build must succeed.",
+  "snapshot_or_generated_files": "None. All source is committed as-is.",
+  "environment_constraints": "Frontend only. No backend. Mock data in src/data/dielineTemplates.js. Dev server runs on :5173. Do NOT restart the dev server unless instructed. Use React 19 and Vite 8 APIs.",
+  "contribution_requirements": "No formal CONTRIBUTING.md. Per README: use React 19, Vite, JavaScript, React Router DOM, plain CSS, lucide-react icons only, no Tailwind/Bootstrap/Material UI. Keep architecture ready for Three.js/Express/PostgreSQL integration later. Create service abstraction layer for data so backend APIs can replace mock data without rewriting pages.",
+  "key_patterns": "Routing: react-router-dom with <Routes>/<Route> in App.jsx. State: Zustand store in src/store/useEditorStore.js (not currently used by dieline pages). Icons: lucide-react. Styling: CSS modules or plain CSS in src/styles/. Canvas 2D rendering: DielineCanvas.jsx uses useRef + canvas API. 3D: Dieline3DPreview.jsx uses @react-three/fiber <Canvas> with <OrbitControls> from @react-three/drei. Geometry: dielineGeometry.js exports generateDielineLayout (returns {panels, foldLines, cutLines, totalWidth, totalHeight}). Templates: dielineTemplates.js exports array of {id, code, title, category, description, styleId, dimensions, previewTone, illustrative?}.",
+  "relevant_files": [
+    "src/App.jsx (routing)",
+    "src/pages/DielineTemplatesPage.jsx (gallery, currently renders DielineStudio inline when ?template= is set — must be changed to navigate to /dieline/configure instead)",
+    "src/pages/DielineStudio.jsx (editor, needs to become /dieline/editor route and accept location.state for template config)",
+    "src/components/dieline/DielineCanvas.jsx (2D canvas, fold lines render as grey dashed lines — must be changed to blue #2563eb)",
+    "src/components/dieline/Dieline3DPreview.jsx (3D box, all sides render as flat panels stacked — geometry maps to 3D positions correctly but camera/scale needs verification)",
+    "src/components/dieline/DielineProperties.jsx (left sidebar with dimension inputs)",
+    "src/components/dieline/DielineToolbar.jsx (top toolbar)",
+    "src/components/dieline/DielineTemplatePreview.jsx (SVG thumbnail for cards)",
+    "src/utils/dielineGeometry.js (geometry engine — currently lays all panels vertically stacked, fold lines only horizontal, cut lines just bounding rect — needs horizontal net layout for shipping-box/RSC)",
+    "src/data/dielineTemplates.js (12 templates, 4 supported styleIds)",
+    "src/styles/dielineTemplates.css (gallery styles)",
+    "src/styles/index.css (global styles including .dieline-studio layout)"
+  ],
+  "directory_structure": "src/App.jsx (routes), src/pages/ (page components), src/components/dieline/ (canvas, 3D preview, properties, toolbar, template preview), src/utils/ (geometry logic), src/data/ (mock data), src/styles/ (CSS), src/store/ (Zustand store — not used by dieline yet)"
+}

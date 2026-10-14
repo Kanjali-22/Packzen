@@ -6,6 +6,7 @@ import TemplateGallery from './pages/TemplateGallery';
 import DetailPage from './pages/DetailPage';
 import PricingPage from './pages/PricingPage';
 import PlaceholderPage from './pages/PlaceholderPage';
+import DielineTemplatesPage from './pages/DielineTemplatesPage';
 
 function Shell({ children }) {
   return <PageLayout>{children}</PageLayout>;
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/mockups" element={<Shell><TemplateGallery /></Shell>} />
       <Route path="/mockups/:category" element={<Shell><TemplateGallery /></Shell>} />
       <Route path="/mockups/item/:slug" element={<Shell><DetailPage /></Shell>} />
+      <Route path="/dieline" element={<Shell><DielineTemplatesPage /></Shell>} />
       <Route path="/pricing" element={<Shell><PricingPage /></Shell>} />
       <Route path="/editor" element={<PlaceholderPage />} />
       <Route path="/editor/:templateId" element={<PlaceholderPage />} />

@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-003",
+  "type": "refactor",
+  "description": "Restructure DielineStudio to become the /dieline/editor route, accept template configuration from location.state (React Router navigate state), and implement a proper three-panel horizontal layout (LEFT: properties, CENTER: 2D canvas, RIGHT: 3D preview + selected panel info). Add breadcrumb or back-to-gallery button. This is independent of FEAT-001 and FEAT-002 but should be sequenced after FEAT-002 to receive configuration state.",
+  "status": "pending",
+  "steps": [
+    "1. Modify src/pages/DielineStudio.jsx: At the top of the component, read location.state using useLocation from react-router-dom. If location.state contains {templateId, dimensions, styleId, materialThickness}, use those values to initialize the component state instead of DEFAULT_DIMENSIONS/DEFAULT_STYLE. Look up the template from dielineTemplates using templateId if provided.",
+    "2. Change the existing layout from a vertical stack (CENTER canvas + RIGHT 3D preview stacked, plus sidebar) to a horizontal three-column grid: .dieline-main {display: grid; grid-template-columns: 320px 1fr 400px;}. LEFT column: DielineProperties. CENTER column: DielineCanvas (full height). RIGHT column: Dieline3DPreview (top half) + selected panel info card (bottom half).",
+    "3. Modify src/styles/index.css: Update .dieline-main to use the three-column grid layout. Update .dieline-editor-area to remove the vertical grid-template-rows and make it a single column (the canvas fills the center). Move .dieline-3d-preview to the right column and give it min-height: 300px.",
+    "4. Add a breadcrumb or back button in the DielineToolbar or above the main area: <button onClick={() => navigate('/dieline')}><ArrowLeft /> Back to Gallery</button>. Import useNavigate from react-router-dom.",
+    "5. Remove the 'onBack' prop from DielineStudio (no longer needed since it's a dedicated route, not an inline component).",
+    "6. Add route to src/App.jsx: <Route path=\"/dieline/editor\" element={<Shell><DielineStudio /></Shell>} />.",
+    "7. Remove the existing /editor route (it was a placeholder page) if it conflicts, or keep it as a separate 3D mockup editor placeholder."
+  ],
+  "acceptance_criteria": [
+    "Navigating to /dieline/editor (from the configuration screen with state, or directly) opens the editor with a three-panel horizontal layout: properties on left, 2D canvas in center, 3D preview on right.",
+    "If location.state contains template configuration, the editor initializes with those dimensions and box style (not the hardcoded defaults).",
+    "Clicking the back button navigates to /dieline (gallery).",
+    "The layout is visually proportional: properties panel ~320px, canvas flexible center, 3D preview ~400px.",
+    "Changing dimensions in the left properties panel updates both the center 2D canvas and right 3D preview.",
+    "No console errors."
+  ],
+  "verification": [
+    "Run npm run dev",
+    "Open http://localhost:5173/dieline",
+    "Click 'Mailer Box' template card",
+    "In the configuration screen, change dimensions to 350×250×120mm",
+    "Click 'Open in Editor'",
+    "Verify /dieline/editor opens with the three-panel horizontal layout",
+    "Verify the 2D canvas and 3D preview show the mailer box with 350×250×120mm dimensions (not the default 300×200×150mm)",
+    "Change height to 150mm in the left properties panel",
+    "Verify both the 2D canvas and 3D preview update immediately",
+    "Click 'Back to Gallery'",
+    "Verify the browser returns to /dieline"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

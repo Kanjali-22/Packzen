@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-004",
+  "type": "fix",
+  "description": "Fix 3D preview camera positioning and panel geometry so the 3D box is properly framed and recognizable (not tiny in a huge viewport, not showing flat panels in 2D order). Verify the box dimensions match the configuration. This is independent of the other features but should be sequenced last to verify the complete flow.",
+  "status": "pending",
+  "steps": [
+    "1. Inspect src/components/dieline/Dieline3DPreview.jsx: The BoxModel component creates 6 parts (bottom, side1, side2, end1, end2, lid). The position and size arrays are correctly calculated. The group scale multiplies normalizedDimensions which is already in normalized space — verify this doesn't double-normalize. The Canvas camera is at [7,6,8] with target [0,1,0].",
+    "2. Change the camera target to [0, normalizedDimensions.height/2, 0] so the camera centers on the middle of the box height (currently targets y=1, which may be off-center for small boxes).",
+    "3. Verify the group scale logic: the current code scales by [normalizedDimensions.length/4, normalizedDimensions.height/4, normalizedDimensions.width/4]. Since normalizedDimensions is already scaled to a 0-4 range, this division by 4 normalizes it again, producing a 0-1 range. The inner BoxModel receives fixed dimensions {length: 4, width: (W/L)*4, height: (H/L)*4}. This appears correct — the inner model is always 4 units long, the group scale adjusts for actual proportions. Leave this logic as-is unless testing reveals a problem.",
+    "4. Test with various dimension ratios: 300×200×150, 400×400×400 (cube), 600×100×50 (long thin box). The box should remain centered and fully visible in the viewport. If the box appears too small, increase the inner BoxModel dimensions from 4 to 6 or 8 (and adjust the group scale denominator accordingly). If the box appears too large, decrease the dimensions.",
+    "5. Verify the OrbitControls minDistance/maxDistance (currently 2/30) allow the user to zoom close enough to inspect details but not so far that the box becomes a dot.",
+    "6. If the panels still appear as flat stacked shapes instead of a 3D box, inspect the BoxModel positions: bottom should be at [0, t/2, 0] (horizontal plane at ground), side1 at [0, H/2+t, -W/2] (vertical plane at -Z), side2 at [0, H/2+t, W/2] (vertical plane at +Z), end1 at [-L/2, H/2+t, 0] (vertical plane at -X), end2 at [L/2, H/2+t, 0] (vertical plane at +X), lid at [0, H+1.5t, 0] (horizontal plane at top). These positions look correct for a closed box. If the problem is visual (all faces the same color), add different colors or textures to each panel."
+  ],
+  "acceptance_criteria": [
+    "The 3D preview shows a recognizable box (not a flat stack of panels, not a tiny dot in a huge viewport).",
+    "The box is centered in the viewport and fully visible with the default camera position.",
+    "Changing dimensions in the editor updates the 3D box proportions correctly.",
+    "OrbitControls allow the user to rotate, zoom, and pan the box smoothly.",
+    "The camera target centers on the middle of the box, not an arbitrary fixed point."
+  ],
+  "verification": [
+    "Run npm run dev",
+    "Open http://localhost:5173/dieline",
+    "Click any template card, configure dimensions, and open the editor",
+    "Verify the 3D preview (right panel) shows a recognizable 3D box with 6 visible faces",
+    "Verify the box is centered in the viewport and occupies a reasonable portion of the canvas (not tiny, not overflowing)",
+    "Change dimensions to 600×100×50mm (long thin box)",
+    "Verify the 3D box updates to a long thin shape and remains fully visible",
+    "Change dimensions to 200×200×200mm (cube)",
+    "Verify the 3D box updates to a cube and remains centered",
+    "Use mouse to rotate the box (drag on 3D canvas)",
+    "Verify the box rotates smoothly and all 6 faces are visible at different angles"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

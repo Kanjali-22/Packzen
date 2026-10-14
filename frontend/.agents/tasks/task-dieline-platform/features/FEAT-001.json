@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix dieline geometry engine to generate correct horizontal net layouts (proper cross/T-shape) for RSC/shipping-box and other box styles, and fix canvas rendering to draw blue dashed fold lines and red solid cut lines (actual perimeter, not bounding rect).",
+  "status": "pending",
+  "steps": [
+    "1. Modify src/utils/dielineGeometry.js: Rewrite generateDielineLayout for styleId='shipping-box' to create a horizontal strip layout: a horizontal row of 4 body panels (front L×H, side1 W×H, back L×H, side2 W×H) plus glue flap on the right, with top flaps above the strip and bottom flaps below. Each flap is W/2 tall (major flaps on front/back panels) and L/2 wide (minor flaps on side panels). Vertical fold lines between adjacent horizontal panels, horizontal fold lines between flaps and body strip. Return correct panel positions {x, y, width, height, type} and fold lines {x, y, width, height} (width>0 for horizontal lines, height>0 for vertical lines).",
+    "2. Generate the cut lines array as the actual perimeter outline of the net (not just a bounding rect). For a simple rectangular net, this is 4 line segments forming the outer boundary. Store each cut line as {x1, y1, x2, y2, type: 'cut'} or use the existing {x, y, width, height} format if width/height represent the line endpoints.",
+    "3. Apply the same horizontal layout strategy to styleId='folding-carton' (similar strip + tuck flaps instead of straight flaps), styleId='mailer-box' (horizontal strip + lid panel attached to one side), and styleId='custom-box' (same as shipping-box).",
+    "4. Modify src/components/dieline/DielineCanvas.jsx: Change fold line rendering from grey (#64748b or similar) to blue (#2563eb) dashed lines. Change cut line rendering from drawing a single bounding rectangle to drawing the actual perimeter cut lines returned by the geometry engine. Ensure cut lines are red solid lines.",
+    "5. Test with default shipping-box dimensions (300×200×150mm): the net should show a horizontal strip of 4 panels with flaps above and below, fold lines should be blue dashed, cut lines should be red solid perimeter outline. Change dimensions to 400×300×200mm and verify the layout recalculates correctly."
+  ],
+  "acceptance_criteria": [
+    "The 2D dieline for shipping-box shows a horizontal strip (front, side1, back, side2) with top and bottom flaps in a proper cross/T-shape net layout, not all panels stacked vertically.",
+    "Fold lines render as blue (#2563eb) dashed lines, including vertical lines between horizontal panels and horizontal lines between flaps and body.",
+    "Cut lines render as red solid lines forming the actual perimeter of the net, not a bounding rectangle.",
+    "Changing dimensions in the properties panel immediately recalculates the geometry and updates the 2D canvas.",
+    "Running npm run dev and opening /dieline shows the gallery; clicking any template card and opening the editor shows the corrected 2D net layout."
+  ],
+  "verification": [
+    "Run npm run dev",
+    "Open http://localhost:5173/dieline",
+    "Click 'Regular Slotted Carton' template card",
+    "Verify the 2D canvas shows a horizontal strip layout (not vertical stack)",
+    "Verify fold lines are blue dashed",
+    "Verify cut lines are red solid perimeter (not grey bounding rect)",
+    "Change length from 300 to 400mm in the properties panel",
+    "Verify the 2D canvas updates immediately with the new dimensions"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

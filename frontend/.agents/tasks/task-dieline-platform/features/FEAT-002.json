@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Create a new Template Configuration screen (/dieline/configure?template=<id>) with large 2D preview, 3D preview, dimension controls, material settings, and 'Open in Editor' button. Change DielineTemplatesPage to navigate to this screen instead of rendering DielineStudio inline. This is independent of FEAT-001 but must be sequenced after it to use the corrected geometry.",
+  "status": "pending",
+  "steps": [
+    "1. Create src/pages/DielineConfigurePage.jsx: Read templateId from URL query param (useSearchParams), look up template from dielineTemplates, display template name/category/description at top, render DielineTemplatePreview (large SVG) in a left column, and Dieline3DPreview in a right column.",
+    "2. Add dimension controls in DielineConfigurePage: length, width, height inputs (using the form-input styles from existing DielineProperties), unit selector dropdown (mm/cm/in), material thickness input, glue flap width input (if template.styleId supports it). Initialize state from template.dimensions, update state on input change.",
+    "3. Pass the current dimensions state to DielineTemplatePreview and Dieline3DPreview so they update live when the user changes inputs. DielineTemplatePreview should call generateDielineLayout internally (or accept a layout prop). Dieline3DPreview already accepts dimensions and materialThickness props.",
+    "4. Add compatibility note below previews when template.illustrative is true: 'This template uses the closest supported editor structure: {getBoxStyle(styleId).name}'.",
+    "5. Add 'Open in Editor' button that navigates to /dieline/editor with state: navigate('/dieline/editor', {state: {templateId: template.id, dimensions, styleId: template.styleId, materialThickness}}).",
+    "6. Add a back button that navigates to /dieline (gallery).",
+    "7. Modify src/pages/DielineTemplatesPage.jsx: remove the inline DielineStudio rendering (the selectedTemplate conditional block). Change the chooseTemplate function to navigate('/dieline/configure?template=' + encodeURIComponent(template.id)) instead of setting search params.",
+    "8. Add route to src/App.jsx: <Route path=\"/dieline/configure\" element={<Shell><DielineConfigurePage /></Shell>} />",
+    "9. Add CSS for DielineConfigurePage in src/styles/dielineTemplates.css: three-column layout (left: template info + controls, center: 2D preview, right: 3D preview), responsive stack on smaller screens."
+  ],
+  "acceptance_criteria": [
+    "Clicking a template card in the gallery navigates to /dieline/configure?template=<id> and shows the configuration screen.",
+    "The configuration screen displays template name, category, description, large 2D preview, 3D preview, and dimension controls.",
+    "Changing length/width/height in the dimension controls immediately updates both the 2D preview (via updated layout) and 3D preview (via dimensions prop).",
+    "Clicking 'Open in Editor' navigates to /dieline/editor with template configuration in location.state.",
+    "Clicking the back button returns to /dieline (gallery).",
+    "No console errors during navigation."
+  ],
+  "verification": [
+    "Run npm run dev",
+    "Open http://localhost:5173/dieline",
+    "Click any template card (e.g., 'Regular Slotted Carton')",
+    "Verify the browser navigates to /dieline/configure?template=fefco-0201-rsc",
+    "Verify the configuration screen shows template name, large 2D preview (SVG), 3D preview (Three.js canvas), and dimension inputs",
+    "Change width from 200 to 250mm",
+    "Verify both 2D and 3D previews update immediately",
+    "Click 'Open in Editor'",
+    "Verify the browser navigates to /dieline/editor",
+    "Click back button in the editor toolbar",
+    "Verify the browser returns to /dieline"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

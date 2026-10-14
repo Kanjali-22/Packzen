@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, Globe, Menu, X, Box, ScanSearch, PenTool, Layers, Printer } from 'lucide-react';
+import { ChevronDown, Globe, Menu, X, Box, ScanSearch, PenTool, Layers, Printer, FileBox } from 'lucide-react';
 import { tools } from '../../data/tools';
 
 const icons = [ScanSearch, PenTool, Layers, Box, Box, Printer];
@@ -30,6 +30,7 @@ export default function Navbar() {
 
   const links = [
     ['/mockups', 'Mockups'],
+    ['/dieline', 'Dieline Templates'],
     ['/ai-creation', 'AI creation'],
     ['/packaging-lab', 'Packaging lab'],
     ['/pricing', 'Pricing']
@@ -83,6 +84,16 @@ export default function Navbar() {
               })}
             </section>
           ))}
+          <section>
+            <h4>Dieline & Print</h4>
+            <Link to="/dieline" className="mega-menu__item" key="dieline">
+              <i><FileBox size={20} /></i>
+              <span>
+                <b>Dieline Studio</b>
+                <small>Professional dieline editor</small>
+              </span>
+            </Link>
+          </section>
         </div>
       )}
       {mobile && (
