@@ -1,0 +1,2 @@
+import {useState} from 'react'; import {Plus} from 'lucide-react';
+export default function Accordion({items}){const [open,setOpen]=useState(0);return <div className="accordion">{items.map(([q,a],i)=><div className="accordion__item" key={q}><button aria-expanded={open===i} onClick={()=>setOpen(open===i?-1:i)}>{q}<Plus size={17}/></button><div className={'accordion__answer '+(open===i?'is-open':'')}><p>{a}</p></div></div>)}</div>}
