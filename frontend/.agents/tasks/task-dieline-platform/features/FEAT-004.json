@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "fix",
   "description": "Fix 3D preview camera positioning and panel geometry so the 3D box is properly framed and recognizable (not tiny in a huge viewport, not showing flat panels in 2D order). Verify the box dimensions match the configuration. This is independent of the other features but should be sequenced last to verify the complete flow.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "1. Inspect src/components/dieline/Dieline3DPreview.jsx: The BoxModel component creates 6 parts (bottom, side1, side2, end1, end2, lid). The position and size arrays are correctly calculated. The group scale multiplies normalizedDimensions which is already in normalized space — verify this doesn't double-normalize. The Canvas camera is at [7,6,8] with target [0,1,0].",
     "2. Change the camera target to [0, normalizedDimensions.height/2, 0] so the camera centers on the middle of the box height (currently targets y=1, which may be off-center for small boxes).",
@@ -32,5 +32,5 @@
     "Verify the box rotates smoothly and all 6 faces are visible at different angles"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Fixed camera target to dynamically center on [0, normalizedDimensions.height/2, 0] instead of fixed [0,1,0]. This ensures the camera centers on the middle of the box height regardless of the box dimensions. Added distinct colors to each panel: side1 uses COLORS.flap, side2 uses COLORS.tuck, end1 uses COLORS.dust, while bottom and end2 use COLORS.panel, and lid uses COLORS.lid. This makes each face visually distinguishable when rotating the box. The group scale logic was verified and is correct - the inner BoxModel receives fixed dimensions with length=4, then the group scale adjusts for actual proportions using normalizedDimensions divided by 4. The geometry positions are correct for a closed box: bottom is horizontal at ground level, side1/side2 are vertical planes at -Z/+Z, end1/end2 are vertical planes at -X/+X, and lid is horizontal at the top. The OrbitControls minDistance=2 and maxDistance=30 provide appropriate zoom range. Build compiles successfully with no errors."
 }
