@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Box, ScanLine, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Box, ScanLine, ArrowUpRight, Sparkles } from 'lucide-react';
 import { templateCategories } from '../data/templates/boxTemplates';
 import { CategoryCard } from '../components/cards/Cards';
 
 const toolCards = [
-  ['Mockup Generator', 'Turn flat artwork into shelf-ready scenes.', Box, 'lilac'],
-  ['3D Packaging Studio', 'Explore your packaging from every angle.', ScanLine, 'mint']
+  ['Mockup Generator', 'Turn flat artwork into shelf-ready scenes.', Box, 'lilac', '/mockups'],
+  ['3D Packaging Studio', 'Explore your packaging from every angle.', ScanLine, 'mint', '/dieline'],
+  ['AI Generation', 'Turn thoughts into realistic packaging scenes with AI.', Sparkles, 'peach', '/ai-creation']
 ];
 
 const showcase = [
@@ -37,8 +38,8 @@ export default function HomePage() {
             Design, visualize and prepare packaging that makes your product feel real — long before it reaches the shelf.
           </p>
           <div className="tool-grid">
-            {toolCards.map(([title, copy, Icon, tone]) => (
-              <Link to="/mockups" className={'tool-card tool-card--' + tone} key={title}>
+            {toolCards.map(([title, copy, Icon, tone, link]) => (
+              <Link to={link || '/mockups'} className={'tool-card tool-card--' + tone} key={title}>
                 <span className="tool-card__icon"><Icon size={30} /></span>
                 <div>
                   <h3>{title}</h3>
@@ -76,7 +77,7 @@ export default function HomePage() {
                   <p className="eyebrow">PACKZEN TOOLS</p>
                   <h3>{title}</h3>
                   <p>{desc}</p>
-                  <Link className="button button--dark" to="/mockups">{cta} <ArrowRight size={14} /></Link>
+                  <Link className="button button--dark" to={type === 'ui-ai' ? '/ai-creation' : '/mockups'}>{cta} <ArrowRight size={14} /></Link>
                 </div>
               </article>
             ))}

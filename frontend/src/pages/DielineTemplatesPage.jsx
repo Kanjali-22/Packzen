@@ -1,14 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronDown, Search, X } from 'lucide-react';
-import { dielineCategories, dielineTemplates, getDielineTemplate } from '../data/dielineTemplates';
+import { dielineCategories, dielineTemplates } from '../data/dielineTemplates';
 import DielineTemplatePreview from '../components/dieline/DielineTemplatePreview';
-import DielineStudio from './DielineStudio';
 import '../styles/dielineTemplates.css';
 
 export default function DielineTemplatesPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const selectedTemplate = getDielineTemplate(searchParams.get('template'));
   const [activeCategory, setActiveCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('relevant');
@@ -29,11 +26,7 @@ export default function DielineTemplatesPage() {
     return sort === 'az' ? [...filtered].sort((a, b) => a.title.localeCompare(b.title)) : filtered;
   }, [activeCategory, query, sort]);
 
-  if (selectedTemplate) {
-    return <DielineStudio key={selectedTemplate.id} template={selectedTemplate} onBack={() => setSearchParams({})} />;
-  }
-
-  const chooseTemplate = (template) => navigate(`/dieline?template=${encodeURIComponent(template.id)}`);
+  const chooseTemplate = (template) => navigate(`/dieline/configure?template=${encodeURIComponent(template.id)}`);
   const clearFilters = () => { setActiveCategory('All'); setQuery(''); };
 
   return (

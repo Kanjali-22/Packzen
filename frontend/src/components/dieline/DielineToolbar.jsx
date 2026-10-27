@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
+  ArrowLeft,
   Save,
   Download,
   Upload,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 
 export default function DielineToolbar({
+  onBackToGallery,
   onSave,
   onExportSVG,
   onExportPDF,
@@ -159,8 +161,23 @@ export default function DielineToolbar({
 
   return (
     <div className="dieline-toolbar" ref={toolbarRef}>
-      {/* Left: Project actions */}
+      {/* Left: Back button and project actions */}
       <div className="toolbar-section">
+        {onBackToGallery && (
+          <>
+            <button
+              type="button"
+              className="toolbar-btn"
+              onClick={onBackToGallery}
+              title="Back to Gallery"
+              aria-label="Back to gallery"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <div className="toolbar-divider" />
+          </>
+        )}
+        
         <div className="toolbar-group">
           <button
             type="button"

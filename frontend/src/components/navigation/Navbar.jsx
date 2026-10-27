@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, Globe, Menu, X, Box, ScanSearch, PenTool, Layers, Printer, FileBox } from 'lucide-react';
+import { ChevronDown, Globe, Menu, X, Box, ScanSearch, PenTool, Layers, Printer, FileBox, LogOut } from 'lucide-react';
 import { tools } from '../../data/tools';
+import { useAuth } from '../../context/AuthContext';
 
 const icons = [ScanSearch, PenTool, Layers, Box, Box, Printer];
 
@@ -9,6 +10,7 @@ export default function Navbar() {
   const [mega, setMega] = useState(false), [mobile, setMobile] = useState(false);
   const ref = useRef();
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     setMega(false);
@@ -51,7 +53,50 @@ export default function Navbar() {
         </nav>
         <div className="nav__actions">
           <button className="language"><Globe size={15} /> English</button>
-          <Link className="button button--dark button--sm" to="/login">Log in</Link>
+          {isAuthenticated && user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Link
+                to="/login"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '7px',
+                  background: '#f4f2f8',
+                  padding: '4px 10px 4px 6px',
+                  borderRadius: '20px',
+                  textDecoration: 'none'
+                }}
+              >
+                <img
+                  src={user.avatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`}
+                  alt={user.name}
+                  style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#eee' }}
+                />
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#18171a' }}>
+                  {user.name.split(' ')[0]}
+                </span>
+              </Link>
+              <button
+                type="button"
+                onClick={logout}
+                title="Log out"
+                style={{
+                  background: 'none',
+                  border: '1px solid #d9d7dc',
+                  borderRadius: '6px',
+                  padding: '5px 7px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: '#666'
+                }}
+              >
+                <LogOut size={13} />
+              </button>
+            </div>
+          ) : (
+            <Link className="button button--dark button--sm" to="/login">Log in</Link>
+          )}
         </div>
         <button aria-label="Toggle navigation" className="nav__mobile" onClick={() => setMobile(!mobile)}>
           {mobile ? <X /> : <Menu />}
@@ -69,6 +114,8 @@ export default function Navbar() {
                     to={
                       title.includes('Mockup')
                         ? '/mockups'
+                        : title === 'AI creation'
+                        ? '/ai-creation'
                         : '/packaging-lab'
                     }
                     className="mega-menu__item"
@@ -99,7 +146,20 @@ export default function Navbar() {
       {mobile && (
         <nav className="mobile-menu">
           {links.map(([to, l]) => <NavLink key={to} to={to}>{l}</NavLink>)}
-          <Link to="/login">Log in</Link>
+          {isAuthenticated && user ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid #eee' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700 }}>{user.name}</span>
+              <button
+                type="button"
+                onClick={logout}
+                style={{ border: 0, background: 'none', color: '#e02424', fontWeight: 700, cursor: 'pointer' }}
+              >
+                Log out
+              </button>
+            </div>
+          ) : (
+            <Link to="/login">Log in</Link>
+          )}
         </nav>
       )}
     </header>

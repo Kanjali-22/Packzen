@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Create a new Template Configuration screen (/dieline/configure?template=<id>) with large 2D preview, 3D preview, dimension controls, material settings, and 'Open in Editor' button. Change DielineTemplatesPage to navigate to this screen instead of rendering DielineStudio inline. This is independent of FEAT-001 but must be sequenced after it to use the corrected geometry.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "1. Create src/pages/DielineConfigurePage.jsx: Read templateId from URL query param (useSearchParams), look up template from dielineTemplates, display template name/category/description at top, render DielineTemplatePreview (large SVG) in a left column, and Dieline3DPreview in a right column.",
     "2. Add dimension controls in DielineConfigurePage: length, width, height inputs (using the form-input styles from existing DielineProperties), unit selector dropdown (mm/cm/in), material thickness input, glue flap width input (if template.styleId supports it). Initialize state from template.dimensions, update state on input change.",
@@ -36,5 +36,5 @@
     "Verify the browser returns to /dieline"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Created DielineConfigurePage component with three-column layout (sidebar with controls, center 2D preview, right 3D preview). Modified DielineTemplatesPage to navigate to /dieline/configure?template=<id> instead of rendering DielineStudio inline. Added route to App.jsx. Added responsive CSS to dielineTemplates.css. Both 2D (DielineTemplatePreview) and 3D (Dieline3DPreview) previews update live when dimension inputs change via React state. The 'Open in Editor' button navigates to /dieline/editor with templateId, dimensions, styleId, materialThickness, and glueFlapWidth in location.state. Back button returns to /dieline gallery. Build compiles successfully with no errors. Template compatibility note displays when template.illustrative is true.\n\nINTEGRATION VERIFICATION (Iteration 1): Navigation flow works correctly: gallery -> configure screen -> editor. Template state passes correctly through location.state. Both 2D and 3D previews in configure screen receive and render template configuration. DielineConfigurePage is properly wrapped with Shell (PageLayout) for consistent navigation. URL query parameter template=<id> is read correctly and template lookup works."
 }

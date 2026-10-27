@@ -1,0 +1,658 @@
+/* Dieline Studio V2 - Complete Functional Editor */
+
+.dieline-studio-v2 {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  color: #1e293b;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   TOP TOOLBAR
+   ============================================================================ */
+
+.dst-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.dst-toolbar-left,
+.dst-toolbar-center,
+.dst-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dst-toolbar-center {
+  flex: 1;
+  justify-content: center;
+}
+
+.dst-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-right: 8px;
+}
+
+.dst-logo svg {
+  color: #3b82f6;
+}
+
+.dst-toolbar-divider {
+  width: 1px;
+  height: 32px;
+  background: #e2e8f0;
+  margin: 0 8px;
+}
+
+.dst-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dst-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #1e293b;
+}
+
+.dst-btn:active {
+  transform: translateY(1px);
+}
+
+.dst-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dst-btn-icon:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #1e293b;
+}
+
+.dst-btn-icon.active {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.dst-btn-user {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.dst-btn-user:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.dst-export-group {
+  display: flex;
+  align-items: center;
+}
+
+.dst-view-switch {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.dst-view-switch button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dst-view-switch button.active {
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+}
+
+.dst-view-switch button:hover:not(.active) {
+  color: #475569;
+}
+
+/* ============================================================================
+   MAIN LAYOUT
+   ============================================================================ */
+
+.dst-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   SIDEBARS
+   ============================================================================ */
+
+.dst-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.dst-sidebar-left {
+  width: 280px;
+}
+
+.dst-sidebar-right {
+  width: 300px;
+  border-right: none;
+  border-left: 1px solid #e2e8f0;
+}
+
+.dst-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dst-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.dst-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dst-select:hover {
+  border-color: #94a3b8;
+}
+
+.dst-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dst-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dst-input-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.dst-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.dst-input:hover {
+  border-color: #94a3b8;
+}
+
+.dst-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dst-input-with-unit {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dst-input-with-unit .dst-input {
+  padding-right: 45px;
+}
+
+.dst-unit {
+  position: absolute;
+  right: 12px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.dst-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dst-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.dst-checkbox span {
+  font-size: 14px;
+  color: #475569;
+}
+
+.dst-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dst-btn-primary:hover {
+  background: #2563eb;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.dst-btn-primary:active {
+  transform: translateY(1px);
+}
+
+.dst-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dst-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* ============================================================================
+   CANVAS WRAPPER
+   ============================================================================ */
+
+.dst-canvas-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.dst-canvas-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.dst-canvas-toolbar-left,
+.dst-canvas-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dst-toolbar-divider-small {
+  width: 1px;
+  height: 24px;
+  background: #e2e8f0;
+  margin: 0 4px;
+}
+
+.dst-toolbar-info {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.dst-canvas-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.dst-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* ============================================================================
+   PANEL VIEW (Bottom Thumbnails)
+   ============================================================================ */
+
+.dst-panel-view {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.dst-panel-view-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.dst-panel-thumbnails {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.dst-panel-thumb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 80px;
+}
+
+.dst-panel-thumb:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.dst-panel-thumb.active {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.dst-panel-thumb-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.dst-panel-thumb.active .dst-panel-thumb-box {
+  border-color: #3b82f6;
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.dst-panel-thumb span {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.dst-panel-thumb.active span {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   3D PREVIEW
+   ============================================================================ */
+
+.dst-3d-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.dst-3d-preview-small {
+  width: 100%;
+  height: 280px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.dst-3d-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* ============================================================================
+   PANEL DETAILS
+   ============================================================================ */
+
+.dst-panel-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dst-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dst-detail-row:last-child {
+  border-bottom: none;
+}
+
+.dst-detail-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.dst-detail-value {
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 600;
+  text-align: right;
+}
+
+.dst-empty-state {
+  padding: 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* ============================================================================
+   MATERIAL INFO
+   ============================================================================ */
+
+.dst-material-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.dst-material-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #e8dcc8 0%, #d4c4b0 100%);
+  border: 1px solid #cbd5e1;
+  flex-shrink: 0;
+}
+
+.dst-material-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dst-material-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.dst-material-thickness {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ============================================================================
+   SCROLLBAR STYLING
+   ============================================================================ */
+
+.dst-sidebar::-webkit-scrollbar,
+.dst-panel-thumbnails::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dst-sidebar::-webkit-scrollbar-track,
+.dst-panel-thumbnails::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dst-sidebar::-webkit-scrollbar-thumb,
+.dst-panel-thumbnails::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dst-sidebar::-webkit-scrollbar-thumb:hover,
+.dst-panel-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 1200px) {
+  .dst-sidebar-left {
+    width: 240px;
+  }
+  
+  .dst-sidebar-right {
+    width: 260px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dst-main {
+    flex-direction: column;
+  }
+  
+  .dst-sidebar {
+    width: 100% !important;
+    max-height: 300px;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .dst-canvas-wrapper {
+    min-height: 400px;
+  }
+}

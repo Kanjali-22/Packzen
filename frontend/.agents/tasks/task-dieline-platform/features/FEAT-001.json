@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "fix",
   "description": "Fix dieline geometry engine to generate correct horizontal net layouts (proper cross/T-shape) for RSC/shipping-box and other box styles, and fix canvas rendering to draw blue dashed fold lines and red solid cut lines (actual perimeter, not bounding rect).",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "1. Modify src/utils/dielineGeometry.js: Rewrite generateDielineLayout for styleId='shipping-box' to create a horizontal strip layout: a horizontal row of 4 body panels (front L×H, side1 W×H, back L×H, side2 W×H) plus glue flap on the right, with top flaps above the strip and bottom flaps below. Each flap is W/2 tall (major flaps on front/back panels) and L/2 wide (minor flaps on side panels). Vertical fold lines between adjacent horizontal panels, horizontal fold lines between flaps and body strip. Return correct panel positions {x, y, width, height, type} and fold lines {x, y, width, height} (width>0 for horizontal lines, height>0 for vertical lines).",
     "2. Generate the cut lines array as the actual perimeter outline of the net (not just a bounding rect). For a simple rectangular net, this is 4 line segments forming the outer boundary. Store each cut line as {x1, y1, x2, y2, type: 'cut'} or use the existing {x, y, width, height} format if width/height represent the line endpoints.",
@@ -28,5 +28,5 @@
     "Verify the 2D canvas updates immediately with the new dimensions"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Horizontal layout implemented using coordinate system where panels are positioned left-to-right with x coordinates incrementing. Fold lines use {x, y, width, height} format where width>0 means horizontal line and height>0 means vertical line. Cut lines use {x1, y1, x2, y2} format for perimeter segments. The canvas rendering supports both formats. Layout for shipping-box: horizontal strip of 4 body panels (front L×H at x=0, side1 W×H, back L×H, side2 W×H) with top flaps above (y=0) and bottom flaps below the strip. Flap height is W/2. Total net width = 2L + 2W + glueFlap, total height = W + H. Geometry recalculates correctly when dimensions change.\n\nINTEGRATION VERIFICATION (Iteration 1): Geometry functions correctly across all three screens. DielineTemplatePreview in gallery cards uses the geometry engine. DielineConfigurePage 2D preview updates live with dimension changes. DielineCanvas in editor correctly renders blue fold lines and red cut lines. Build completes successfully with no errors."
 }

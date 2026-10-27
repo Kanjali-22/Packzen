@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ArrowLeft, Save, Download, Upload, Undo, Redo, AlertCircle, CheckCircle, RotateCcw } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Save, Download, Upload, Undo, Redo, AlertCircle, CheckCircle, RotateCcw, FileText, Image, Box } from 'lucide-react';
 import DielineCanvas from '../components/dieline/DielineCanvas';
 import Dieline3DPreview from '../components/dieline/Dieline3DPreview';
 import DielineProperties from '../components/dieline/DielineProperties';
@@ -7,19 +8,37 @@ import DielineToolbar from '../components/dieline/DielineToolbar';
 import BoxStyleSelector from '../components/dieline/BoxStyleSelector';
 import { generateDielineLayout, validateDielineConfig, getAllBoxStyles, getBoxStyle } from '../utils/dielineGeometry';
 import { exportToSVG, exportToPDF, exportToPNG, exportToJSON, exportProjectFile, importFromJSON, generateFilename } from '../utils/dielineExport';
+import { getDielineTemplate } from '../data/dielineTemplates';
 
 const DEFAULT_DIMENSIONS = { length: 300, width: 200, height: 150, unit: 'mm' };
 const DEFAULT_STYLE = 'shipping-box';
 const DEFAULT_MATERIAL_THICKNESS = 1.5;
 const DEFAULT_GLUE_FLAP_WIDTH = 30;
 
-export default function DielineStudio({ template = null, onBack }) {
-  // Core state
-  const [dimensions, setDimensions] = useState(template?.dimensions ?? DEFAULT_DIMENSIONS);
-  const [styleId, setStyleId] = useState(template?.styleId ?? DEFAULT_STYLE);
-  const [materialThickness, setMaterialThickness] = useState(DEFAULT_MATERIAL_THICKNESS);
-  const [glueFlapWidth, setGlueFlapWidth] = useState(DEFAULT_GLUE_FLAP_WIDTH);
-  const [unit, setUnit] = useState('mm');
+export default function DielineStudio() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Read configuration from location.state
+  const stateConfig = location.state || {};
+  const template = stateConfig.templateId ? getDielineTemplate(stateConfig.templateId) : null;
+  
+  // Core state - initialize from location.state or template or defaults
+  const [dimensions, setDimensions] = useState(
+    stateConfig.dimensions ?? template?.dimensions ?? DEFAULT_DIMENSIONS
+  );
+  const [styleId, setStyleId] = useState(
+    stateConfig.styleId ?? template?.styleId ?? DEFAULT_STYLE
+  );
+  const [materialThickness, setMaterialThickness] = useState(
+    stateConfig.materialThickness ?? DEFAULT_MATERIAL_THICKNESS
+  );
+  const [glueFlapWidth, setGlueFlapWidth] = useState(
+    stateConfig.glueFlapWidth ?? DEFAULT_GLUE_FLAP_WIDTH
+  );
+  const [unit, setUnit] = useState(
+    stateConfig.dimensions?.unit ?? template?.dimensions?.unit ?? 'mm'
+  );
   
   // UI state
   const [showGrid, setShowGrid] = useState(true);
@@ -283,11 +302,16 @@ export default function DielineStudio({ template = null, onBack }) {
   }, [dimensions, unit]);
 
   const UNIT_CONVERSION = { mm: 1, cm: 10, in: 25.4 };
+  
+  // Back to gallery handler
+  const handleBackToGallery = useCallback(() => {
+    navigate('/dieline');
+  }, [navigate]);
 
   return (
     <div className="dieline-studio">
-      {template && <div className="dieline-template-context"><button type="button" onClick={onBack}><ArrowLeft size={16} /> Templates</button><span>{template.title}</span>{template.illustrative && <small>Closest supported structure: {getBoxStyle(styleId).name}</small>}</div>}
       <DielineToolbar
+        onBackToGallery={handleBackToGallery}
         onSave={handleSave}
         onExportSVG={handleExportSVG}
         onExportPDF={handleExportPDF}
@@ -316,6 +340,22 @@ export default function DielineStudio({ template = null, onBack }) {
       />
       
       <div className="dieline-main">
+        <aside className="dieline-sidebar dieline-sidebar-left">
+          <DielineProperties
+            dimensions={dimensions}
+            styleId={styleId}
+            materialThickness={materialThickness}
+            glueFlapWidth={glueFlapWidth}
+            unit={unit}
+            onDimensionsChange={handleDimensionsChange}
+            onStyleChange={handleStyleChange}
+            onMaterialThicknessChange={handleMaterialThicknessChange}
+            onGlueFlapWidthChange={handleGlueFlapWidthChange}
+            onUnitChange={handleUnitChange}
+            validationErrors={validationErrors}
+          />
+        </aside>
+        
         <div className="dieline-editor-area">
           <DielineCanvas
             ref={canvasRef}
@@ -331,32 +371,36 @@ export default function DielineStudio({ template = null, onBack }) {
             onLayoutChange={handleLayoutChange}
             onPanelSelect={setSelectedPanel}
           />
-          
-          <Dieline3DPreview
-            layout={layout}
-            dimensions={dimensions}
-            styleId={styleId}
-            materialThickness={materialThickness}
-            unit={unit}
-            selectedPanel={selectedPanel}
-            onPanelSelect={setSelectedPanel}
-          />
         </div>
         
-        <aside className="dieline-sidebar">
-          <DielineProperties
-            dimensions={dimensions}
-            styleId={styleId}
-            materialThickness={materialThickness}
-            glueFlapWidth={glueFlapWidth}
-            unit={unit}
-            onDimensionsChange={handleDimensionsChange}
-            onStyleChange={handleStyleChange}
-            onMaterialThicknessChange={handleMaterialThicknessChange}
-            onGlueFlapWidthChange={handleGlueFlapWidthChange}
-            onUnitChange={handleUnitChange}
-            validationErrors={validationErrors}
-          />
+        <aside className="dieline-sidebar dieline-sidebar-right">
+          <div className="dieline-3d-preview-container">
+            <Dieline3DPreview
+              layout={layout}
+              dimensions={dimensions}
+              styleId={styleId}
+              materialThickness={materialThickness}
+              unit={unit}
+              selectedPanel={selectedPanel}
+              onPanelSelect={setSelectedPanel}
+            />
+          </div>
+          
+          {selectedPanel && (
+            <div className="dieline-panel-info-sidebar">
+              <h4>Selected Panel</h4>
+              <dl>
+                <dt>Type</dt>
+                <dd>{selectedPanel.type}</dd>
+                <dt>Width</dt>
+                <dd>{selectedPanel.width?.toFixed(1)} {unit}</dd>
+                <dt>Height</dt>
+                <dd>{selectedPanel.height?.toFixed(1)} {unit}</dd>
+                <dt>Position</dt>
+                <dd>({selectedPanel.x?.toFixed(1)}, {selectedPanel.y?.toFixed(1)})</dd>
+              </dl>
+            </div>
+          )}
         </aside>
       </div>
       
